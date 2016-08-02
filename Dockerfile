@@ -16,7 +16,6 @@ ENV ES_PKG_VERSION 2.3.4
 RUN \
   cd / && \
   wget https://download.elastic.co/elasticsearch/release/org/elasticsearch/distribution/tar/elasticsearch/$ES_PKG_VERSION/elasticsearch-$ES_PKG_VERSION.tar.gz && \
-  wget https://download.elasticsearch.org/elasticsearch/elasticsearch/elasticsearch-$ES_PKG_VERSION.tar.gz && \
   tar xzf elasticsearch-$ES_PKG_VERSION.tar.gz && \
   rm -f elasticsearch-$ES_PKG_VERSION.tar.gz && \
   mv /elasticsearch-$ES_PKG_VERSION /elasticsearch
@@ -25,7 +24,8 @@ RUN \
 ADD libsigar-*.so /elasticsearch/lib/sigar/
 
 RUN \
-  /elasticsearch/bin/plugin -i lmenezes/elasticsearch-kopf/master
+  /elasticsearch/bin/plugin install lmenezes/elasticsearch-kopf/master && \
+  /elasticsearch/bin/plugin install appbaseio/dejaVu
 
 # Define default command.
 CMD ["/elasticsearch/bin/elasticsearch"]
