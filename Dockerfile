@@ -9,7 +9,6 @@ ADD docker_files/elasticsearch.list /etc/apt/sources.list.d/elasticsearch.list
 RUN apt-key add /tmp/archive.key
 RUN apt-get update && apt-get install -y elasticsearch=2.3.4
 
-RUN mkdir /data
 VOLUME /data
 VOLUME /etc/elasticsearch
 
