@@ -1,16 +1,38 @@
-FROM bigboards/java-8-__arch__
+#
+# ElasticSearch Dockerfile
+#
+# Modified from https://github.com/dockerfile/elasticsearch for the BigBoards Hex.
+#
 
-MAINTAINER Daan Gerits <daan@bigboards.io>
+# Pull base image.
+FROM bigboards/java-7-__arch__
 
-ADD docker_files/archive.key /tmp/archive.key
-ADD docker_files/elasticsearch.list /etc/apt/sources.list.d/elasticsearch.list
+MAINTAINER bigboards
 
-RUN apt-key add /tmp/archive.key
-RUN apt-get update && apt-get install -y elasticsearch=2.3.4
+ENV ES_DOWNLOAD_URL
+ENV ES_PKG_NAME elasticsearch-2.3.4
+ENV ES_PKG_VERSION 2.3.4
 
-VOLUME /data
-VOLUME /etc/elasticsearch
+# Install ElasticSearch.
+RUN \
+  cd / && \
+  wget https://download.elastic.co/elasticsearch/release/org/elasticsearch/distribution/tar/elasticsearch/$ES_PKG_VERSION/elasticsearch-$ES_PKG_VERSION.tar.gz && \
+  wget https://download.elasticsearch.org/elasticsearch/elasticsearch/elasticsearch-$ES_PKG_VERSION.tar.gz && \
+  tar xzf elasticsearch-$ES_PKG_VERSION.tar.gz && \
+  rm -f elasticsearch-$ES_PKG_VERSION.tar.gz && \
+  mv /elasticsearch-$ES_PKG_VERSION /elasticsearch
 
-EXPOSE 9200 9300
+# Install Sigar
+ADD libsigar-*.so /elasticsearch/lib/sigar/
 
-CMD ["elasticsearch"]
+RUN \
+  /elasticsearch/bin/plugin -i lmenezes/elasticsearch-kopf/master
+
+# Define default command.
+CMD ["/elasticsearch/bin/elasticsearch"]
+
+# Expose ports.
+#   - 9200: HTTP
+#   - 9300: transport
+EXPOSE 9200
+EXPOSE 9300
