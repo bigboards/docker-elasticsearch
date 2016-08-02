@@ -1,39 +1,18 @@
-#
-# ElasticSearch Dockerfile
-#
-# Modified from https://github.com/dockerfile/elasticsearch for the BigBoards Hex.
-#
+#FROM bigboards/java-8-__arch__
+FROM bigboards/java-8-x86_64
 
-# Pull base image.
-FROM bigboards/java-7-__arch__
+MAINTAINER Daan Gerits <daan@bigboards.io>
 
-MAINTAINER bigboards
-USER root
-ENV ES_PKG_NAME elasticsearch-1.7.1
+ADD docker_files/archive.key /tmp/archive.key
+ADD docker_files/elasticsearch.list /etc/apt/sources.list.d/elasticsearch.list
 
-# install curl
-RUN apt-get update && apt-get install -y wget
+RUN apt-key add /tmp/archive.key
+RUN apt-get update && apt-get install -y elasticsearch=2.3.4
 
-# Install ElasticSearch.
-RUN \
-  cd / && \
-  wget https://download.elasticsearch.org/elasticsearch/elasticsearch/$ES_PKG_NAME.tar.gz && \
-  tar xzf $ES_PKG_NAME.tar.gz && \
-  rm -f $ES_PKG_NAME.tar.gz && \
-  mv /$ES_PKG_NAME /elasticsearch
+RUN mkdir /data
+VOLUME /data
+VOLUME /etc/elasticsearch
 
-# Install Sigar
-ADD libsigar-*.so /elasticsearch/lib/sigar/
+EXPOSE 9200 9300
 
-RUN \
-  /elasticsearch/bin/plugin -i lmenezes/elasticsearch-kopf/master && \
-  /elasticsearch/bin/plugin -i mobz/elasticsearch-head/master
-
-# Define default command.
-CMD ["/elasticsearch/bin/elasticsearch"]
-
-# Expose ports.
-#   - 9200: HTTP
-#   - 9300: transport
-EXPOSE 9200
-EXPOSE 9300
+CMD ["elasticsearch"]
