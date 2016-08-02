@@ -9,7 +9,6 @@ FROM bigboards/java-7-__arch__
 
 MAINTAINER bigboards
 
-ENV ES_DOWNLOAD_URL
 ENV ES_PKG_NAME elasticsearch-2.3.4
 ENV ES_PKG_VERSION 2.3.4
 
