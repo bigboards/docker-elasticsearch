@@ -1,5 +1,4 @@
-#FROM bigboards/java-8-__arch__
-FROM bigboards/java-8-x86_64
+FROM bigboards/java-8-__arch__
 
 MAINTAINER Daan Gerits <daan@bigboards.io>
 
