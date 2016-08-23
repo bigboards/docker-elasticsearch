@@ -25,6 +25,7 @@ ADD libsigar-*.so /elasticsearch/lib/sigar/
 
 RUN \
   /elasticsearch/bin/plugin install lmenezes/elasticsearch-kopf/master && \
+  /elasticsearch/bin/plugin install mobz/elasticsearch-head && \
   /elasticsearch/bin/plugin install appbaseio/dejaVu
 
 # Define default command.
